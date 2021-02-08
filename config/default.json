@@ -1,0 +1,13 @@
+{
+    "jwtSecretKey": "ThisIsTheSuperSecretOfWaldata",
+    "development": {
+      "database": "waldataforum",
+      "dialect": "mysql",
+      "host": "127.0.0.1",
+      "username": "root",
+      "password": ""
+    },
+  "api": {
+    "port" : 8080
+  }
+}
