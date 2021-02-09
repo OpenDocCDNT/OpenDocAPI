@@ -7,14 +7,10 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        roleName: {
+        label: {
             type: DataTypes.STRING(16),
             allowNull: false
         },
-        roleColor: {
-            type: DataTypes.STRING(16),
-            allowNull: false
-        }
     }, {
         timestamps: false,
         freezeTableName: true

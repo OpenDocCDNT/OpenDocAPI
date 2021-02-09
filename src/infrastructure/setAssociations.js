@@ -1,3 +1,5 @@
+const { SET_DEFERRED } = require("sequelize/types/lib/deferrable");
+
 module.exports = (sequelize) => {
     const {user, user_read_chapter, chapter, lesson} = sequelize.models;
 
@@ -7,6 +9,7 @@ module.exports = (sequelize) => {
     
     chapter.belongsTo(user_read_chapter);
 
-    chapter.belongsTo(lesson);
-
+    //Create foreign key for the Comments model
+    comments.belongsTo(Chapters);
+    comments.belongsTo(user);
 }
