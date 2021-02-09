@@ -1,9 +1,7 @@
-const { SET_DEFERRED } = require("sequelize/types/lib/deferrable");
-
 module.exports = (sequelize) => {
     const {user, user_read_chapter, chapter, lesson} = sequelize.models;
 
-    lesson.belongsTo(user);
+    lesson.hasMany(user);
 
     user_read_chapter.belongsTo(user);
     
