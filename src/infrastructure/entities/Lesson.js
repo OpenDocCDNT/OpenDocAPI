@@ -1,22 +1,26 @@
 const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
-    sequelize.define('chapter', {
+    sequelize.define('lesson', {
         id: {
             type: DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true
         },
         label: {
-            type: DataTypes.STRING(150),
+            type: DataTypes.STRING(100),
             allowNull: true
         },
-        content: {
+        description: {
             type: DataTypes.TEXT,
             allowNull: true
         },
-        reputation: {
-            type: DataTypes.INTEGER,
+        publishDate: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        lastEditedDate: {
+            type: DataTypes.DATE,
             allowNull: true
         }
     }, {
