@@ -15,14 +15,12 @@ const sequelize = new Sequelize(
 );
 
 const modelsToDefine = [
-    require('./entities/Category'),
+    require('./entities/Chapter'),
     require('./entities/Role'),
-    require('./entities/RoleSeeCategory'),
-    require('./entities/RoleSeeSub'),
-    require('./entities/Sanction'),
-    require('./entities/SubCategory'),
-    require('./entities/User'),
-    require('./entities/UserHasRole'),
+    require('./entities/Comments'),
+    require('./entities/Lesson'),
+    require('./entities/User_Read_Chapter'),
+    require('./entities/User')
 ];
 
 for (const modelToDefine of modelsToDefine) {

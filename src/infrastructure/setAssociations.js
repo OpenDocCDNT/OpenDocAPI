@@ -1,5 +1,5 @@
 module.exports = (sequelize) => {
-    const {user, user_read_chapter, chapter, lesson} = sequelize.models;
+    const {user, user_read_chapter, chapter, lesson, comments, role} = sequelize.models;
 
     lesson.hasMany(user);
 
@@ -8,6 +8,6 @@ module.exports = (sequelize) => {
     chapter.belongsTo(user_read_chapter);
 
     //Create foreign key for the Comments model
-    comments.belongsTo(Chapters);
+    comments.belongsTo(chapter);
     comments.belongsTo(user);
 }
