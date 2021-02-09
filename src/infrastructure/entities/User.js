@@ -7,25 +7,29 @@ module.exports = (sequelize) => {
             primaryKey: true,
             autoIncrement: true
         },
-        serverCode: {
+        score: {
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        displayName: {
-            type: DataTypes.STRING(16),
-            allowNull: false
+        username: {
+            type: DataTypes.STRING(100),
+            allowNull: true
         },
         email: {
             type: DataTypes.STRING(100),
             allowNull: true
         },
+        job: {
+            type: DataTypes.STRING(100),
+            allowNull: true
+        },
+        description: {
+            type: DataTypes.STRING(255),
+            allowNull: true
+        },
         password: {
             type: DataTypes.TEXT,
             allowNull: true
-        },
-        registerDate: {
-            type: DataTypes.DATE,
-            allowNull: false
         }
     }, {
         timestamps: false,

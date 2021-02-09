@@ -1,3 +1,5 @@
+const User_Read_Chapters = require("./entities/User_Read_Chapters");
+
 module.exports = (sequelize) => {
     const {user, role_see_category, role_see_sub, user_has_role, category, role, sanction, subcategory} = sequelize.models;
 
@@ -8,8 +10,7 @@ module.exports = (sequelize) => {
     subcategory.belongsTo(category);
 
     //Create foreign key for the UserHasRole model
-    user_has_role.belongsTo(user);
-    user_has_role.belongsTo(role);
+    User_Read_Chapters.belongsTo(user);
 
     //Create foreign key for the RoleSeeCategory model
     role_see_category.belongsTo(category);
