@@ -1,3 +1,4 @@
+const comments = require("./entities/comments");
 const User_Read_Chapters = require("./entities/User_Read_Chapters");
 
 module.exports = (sequelize) => {
@@ -20,5 +21,8 @@ module.exports = (sequelize) => {
     role_see_sub.belongsTo(subcategory);
     role_see_sub.belongsTo(role);
 
+    //Create foreign key for the Comments model
+    comments.belongsTo(Chapters);
+    comments.belongsTo(user);
 
 }

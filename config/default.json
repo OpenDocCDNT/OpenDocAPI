@@ -5,7 +5,7 @@
       "dialect": "mysql",
       "host": "127.0.0.1",
       "username": "root",
-      "password": ""
+      "password": "wewait"
     },
   "api": {
     "port" : 8080
