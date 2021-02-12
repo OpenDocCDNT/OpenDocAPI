@@ -16,11 +16,11 @@ router.post('/create',
         tokenValidator,
         [
             body('token', 'Token is required')
-                .notEmpty(),
+            .notEmpty(),
             body('label', 'Label is required')
-                .notEmpty(),
+            .notEmpty(),
             body('description', 'Description is required')
-                .notEmpty()
+            .notEmpty()
         ]
     ],
     async (req, res) => {
@@ -40,9 +40,11 @@ router.post('/create',
                 label: lessonToCreate.label
             }
         })
-        
+
         if (lessonExist) {
-            return res.status(418).json({errors : "Lesson already exist"})
+            return res.status(418).json({
+                errors: "Lesson already exist"
+            })
         }
 
         const transaction = await sequelize.transaction();
@@ -67,7 +69,11 @@ router.post('/create',
         } catch (error) {
             console.log(error);
             transaction.rollback();
-            res.status(500).json({errors : [{msg: 'Internal error'}]})
+            res.status(500).json({
+                errors: [{
+                    msg: 'Internal error'
+                }]
+            })
         }
 
         console.log(lessons.every(lesson => lesson instanceof lesson));
@@ -78,27 +84,12 @@ router.post('/create',
 
 router.post('/getAll',
     [
-        headerFiller,
-        tokenValidator,
-        [
-            body('token', 'Token is required')
-            .notEmpty()
-        ]
+        headerFiller
     ],
     async (req, res) => {
-
-        const errors = validationResult(req);
-        if (!errors.isEmpty())
-            return res.status(400).json({
-                errors: errors.array()
-            });
-
+        
         const lessons = await sequelize.models.lesson.findAll();
-
-        console.log(lessons.every(lesson => lesson instanceof lesson));
-
-        console.log("All Lessons : ", JSON.stringify(lessons, null, 2));
-
+        res.json({ lessons });
     });
 
 router.post('/:lessonId',
@@ -213,7 +204,6 @@ router.post('/:lessonId',
         }
     });
 
-// GET ALL
 // GET ONE
 // UPDATE ONE 
 // DELETE ONE 
