@@ -30,6 +30,10 @@ module.exports = (sequelize) => {
         password: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        registerDate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
         timestamps: false,

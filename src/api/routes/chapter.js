@@ -14,22 +14,15 @@ const {
 } = require('jsonwebtoken');
 const config = require('config');
 const sequelize = require('../../infrastructure/database');
-const headerFiller = require('../../middlewares/headerFiller')
+const headerFiller = require('../../middlewares/headerFiller');
 
-router.post('/login',
+router.post('/chapter',
     [
         headerFiller,
+        tokenValidator,
         [
-            body('email', 'Enter a valid email')
-            .isEmail()
-            .isLength({
-                max: 100
-            }),
-            body('password', 'enter a password between 8 and 50 characters')
-            .isLength({
-                min: 8,
-                max: 50
-            }),
+            body('token', 'Token is required')
+            .notEmpty()
         ]
     ],
     async (req, res) => {
@@ -64,19 +57,46 @@ router.post('/login',
                     }]
                 });
 
+            const userHasRole = await sequelize.models.user_has_role.findOne({
+                raw: true,
+                where: {
+                    isActive: true,
+                    userId: user.id
+                }
+            })
+
+            let role;
+            if (!userHasRole) {
+                role = 1;
+            } else {
+                const userRole = await sequelize.models.role.findOne({
+                    raw: true,
+                    where: {
+                        id: userHasRole.roleId
+                    }
+                })
+
+                if (!userRole) {
+                    role = 1;
+                } else {
+                    role = userRole.id
+                }
+            }
+
             const {
                 id,
-                username,
+                displayName,
                 email,
-                registerDate
+                serverCode
             } = user;
 
             const payload = {
                 user: {
                     id,
-                    username,
+                    displayName,
                     email,
-                    registerDate
+                    serverCode,
+                    role
                 }
             };
 
@@ -106,11 +126,11 @@ router.post('/login',
         }
     });
 
-router.post('/register',
+router.post('/chapter/:chapterId',
     [
         headerFiller,
         [
-            body('username', 'Display name is required')
+            body('displayName', 'Display name is required')
             .notEmpty()
             .isLength({
                 max: 100
@@ -124,7 +144,10 @@ router.post('/register',
             .isLength({
                 min: 5,
                 max: 50
-            })
+            }),
+            body('serverCode', 'Enter a server code')
+            .notEmpty()
+            .isInt()
         ]
     ],
     async (req, res) => {
@@ -154,7 +177,7 @@ router.post('/register',
         const userByName = await sequelize.models.user.findOne({
             raw: true,
             where: {
-                username: userForRegister.username
+                displayName: userForRegister.displayName
             }
         })
         console.log(userByName)
@@ -163,6 +186,23 @@ router.post('/register',
             return res.status(418).json({
                 errors: "User already exists"
             })
+        }
+        console.log(userForRegister.serverCode);
+
+        if (userForRegister.serverCode !== "0") {
+            const userByServerCode = await sequelize.models.user.findOne({
+                raw: true,
+                where: {
+                    serverCode: userForRegister.serverCode
+                }
+            })
+
+            if (userByServerCode) {
+                console.log("yeet")
+                return res.status(418).json({
+                    errors: "User already exists"
+                })
+            }
         }
 
         const transaction = await sequelize.transaction();
@@ -173,9 +213,10 @@ router.post('/register',
             userForRegister.password = await hash(userForRegister.password, salt);
 
             const user = await sequelize.models.user.create({
-                username: userForRegister.username,
+                displayName: userForRegister.displayName,
                 email: userForRegister.email,
                 password: userForRegister.password,
+                serverCode: userForRegister.serverCode,
                 registerDate: Date.now()
             }, {
                 transaction
