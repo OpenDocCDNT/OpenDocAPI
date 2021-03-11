@@ -33,6 +33,7 @@ router.post('/login',
         ]
     ],
     async (req, res) => {
+        console.log('yeet')
 
         const errors = validationResult(req);
         if (!errors.isEmpty())

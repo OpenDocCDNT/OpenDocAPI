@@ -110,10 +110,7 @@ router.post('/:lessonId',
             .isLength({
                 min: 5,
                 max: 50
-            }),
-            body('serverCode', 'Enter a server code')
-            .notEmpty()
-            .isInt()
+            })
         ]
     ],
     async (req, res) => {
