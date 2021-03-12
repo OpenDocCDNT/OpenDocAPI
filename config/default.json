@@ -4,8 +4,8 @@
       "database": "opendoc",
       "dialect": "mysql",
       "host": "127.0.0.1",
-      "username": "etienne",
-      "password": "etienne4"
+      "username": "root",
+      "password": ""
     },
   "api": {
     "port" : 8080

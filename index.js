@@ -12,6 +12,7 @@ const authentificationRoute = require('./src/api/routes/authentification');
 
 global.sequelize = sequelize;
 
+
 const app = express();
 
 app.use(bodyParser.json());

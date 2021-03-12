@@ -142,10 +142,8 @@ router.post('/register',
                 email: userForRegister.email
             }
         })
-        console.log(userByEmail)
 
         if (userByEmail) {
-            console.log("yeet")
             return res.status(418).json({
                 errors: "User already exists"
             })
@@ -159,7 +157,6 @@ router.post('/register',
         })
         console.log(userByName)
         if (userByName) {
-            console.log("yeet")
             return res.status(418).json({
                 errors: "User already exists"
             })
