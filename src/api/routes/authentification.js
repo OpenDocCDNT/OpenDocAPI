@@ -11,6 +11,7 @@ const {
 } = require('bcrypt');
 const {
     sign,
+    verify
 } = require('jsonwebtoken');
 const config = require('config');
 const sequelize = require('../../infrastructure/database');
@@ -33,7 +34,6 @@ router.post('/login',
         ]
     ],
     async (req, res) => {
-        console.log('yeet')
 
         const errors = validationResult(req);
         if (!errors.isEmpty())
@@ -194,5 +194,31 @@ router.post('/register',
             })
         }
     });
+
+router.post('/isTokenValid',
+  [
+      headerFiller,
+      [
+          body('token', 'Token is required')
+            .notEmpty()
+      ]
+  ],
+  async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+          return res.status(400).json({
+              errors: errors.errors[0].msg
+          });
+
+      const {token} = req.body
+
+      try {
+          const payload = verify(token, config.get('jwtSecretKey'));
+          return res.status(200).send({error: "Token is valid"})
+      } catch (e) {
+          return res.status(418).send({error: "Token not valid"})
+      }
+
+  });
 
 module.exports = router;
