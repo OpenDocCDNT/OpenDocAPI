@@ -82,17 +82,19 @@ router.post('/create',
 
     });
 
-router.post('/getAll',
+// GET ALL
+router.get('/getAll',
     [
         headerFiller
     ],
     async (req, res) => {
-        
         const lessons = await sequelize.models.lesson.findAll();
         res.json({ lessons });
     });
 
-router.post('/:lessonId',
+
+// GET ONE
+router.get('/:lessonId',
     [
         headerFiller,
         [
@@ -201,7 +203,6 @@ router.post('/:lessonId',
         }
     });
 
-// GET ONE
 // UPDATE ONE 
 // DELETE ONE 
 
