@@ -9,5 +9,8 @@
     },
   "api": {
     "port" : 8080
+  },
+  "fileUpload": {
+    "dir": "./"
   }
 }

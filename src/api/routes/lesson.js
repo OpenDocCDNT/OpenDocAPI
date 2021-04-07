@@ -8,7 +8,9 @@ const tokenValidator = require('../../middlewares/tokenValidator')
 const config = require('config');
 const sequelize = require('../../infrastructure/database');
 const headerFiller = require('../../middlewares/headerFiller');
-
+const {
+    upload
+} = require('../../infrastructure/controller/contollerUpload')
 
 router.post('/create',
     [
@@ -20,7 +22,9 @@ router.post('/create',
             body('label', 'Label is required')
             .notEmpty(),
             body('description', 'Description is required')
-            .notEmpty()
+            .notEmpty(),
+            body('file',  'Lesson image is required')
+              .notEmpty
         ]
     ],
     async (req, res) => {
@@ -55,16 +59,27 @@ router.post('/create',
                 label: lessonToCreate.label,
                 description: lessonToCreate.description,
                 publishDate: Date.now(),
-                userId: user.id
+                userId: user.id,
+                reputation: 0
             }, {
                 transaction
             });
 
             transaction.commit();
 
-            res.status(200).json({
-                response: 'Success! Lesson created !'
-            });
+            const fileUpload = await upload(req, res);
+
+            if (fileUpload.completed) {
+                res.status(200).json({
+                    response: 'Success! Lesson created !'
+                });
+            } else {
+                res.status(500).json({
+                    response: "Image can't be uploaded"
+                });
+            }
+
+
 
         } catch (error) {
             console.log(error);
@@ -81,6 +96,7 @@ router.post('/create',
         console.log("All Lessons : ", JSON.stringify(lessons, null, 2));
 
     });
+
 
 router.post('/getAll',
     [
