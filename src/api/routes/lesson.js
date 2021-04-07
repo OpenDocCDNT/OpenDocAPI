@@ -201,6 +201,15 @@ router.post('/:lessonId',
         }
     });
 
+router.post('/getTop5',
+[
+    headerFiller
+],
+async (req, res) => {
+    
+    const lessons = await sequelize.models.lesson.findAll();
+    res.json({ lessons });
+});
 // GET ONE
 // UPDATE ONE 
 // DELETE ONE 

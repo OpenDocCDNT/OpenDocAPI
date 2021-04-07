@@ -22,6 +22,10 @@ module.exports = (sequelize) => {
         lastEditedDate: {
             type: DataTypes.DATE,
             allowNull: true
+        },
+        reputation: {
+            type: DataTypes.INTEGER,
+            allowNull: true
         }
     }, {
         timestamps: false,
