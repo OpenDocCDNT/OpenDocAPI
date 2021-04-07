@@ -25,7 +25,7 @@ module.exports = (sequelize) => {
         },
         reputation: {
             type: DataTypes.INTEGER,
-            allowNull: true
+            allowNull: false
         }
     }, {
         timestamps: false,
