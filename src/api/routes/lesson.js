@@ -55,6 +55,7 @@ router.post('/create',
                 label: lessonToCreate.label,
                 description: lessonToCreate.description,
                 publishDate: Date.now(),
+                reputation: 0,
                 userId: user.id
             }, {
                 transaction
@@ -76,10 +77,25 @@ router.post('/create',
             })
         }
 
-        console.log(lessons.every(lesson => lesson instanceof lesson));
+        //console.log(lessons.every(lesson => lesson instanceof lessons));
 
-        console.log("All Lessons : ", JSON.stringify(lessons, null, 2));
+        //console.log("All Lessons : ", JSON.stringify(lessons, null, 2));
 
+    });
+router.post('/topLesson',
+    [
+        headerFiller
+    ],
+    async (req, res) => {
+        try {
+        const lessons = await sequelize.models.lesson.findAll({
+            limit: 5,
+            order: [['reputation', 'DESC']]
+        });
+        res.json({ lessons });
+        } catch (error) {
+            res.status(500).json({ errors: [{ msg: 'Internal error' }] });
+        }
     });
 
 router.post('/getAll',
@@ -87,7 +103,6 @@ router.post('/getAll',
         headerFiller
     ],
     async (req, res) => {
-        
         const lessons = await sequelize.models.lesson.findAll();
         res.json({ lessons });
     });
@@ -131,7 +146,6 @@ router.post('/:lessonId',
         console.log(userByEmail)
 
         if (userByEmail) {
-            console.log("yeet")
             return res.status(418).json({
                 errors: "User already exists"
             })
@@ -200,22 +214,9 @@ router.post('/:lessonId',
             })
         }
     });
-
-router.post('/getTop5',
-[
-    headerFiller
-],
-async (req, res) => {
-    
-    const lessons = await sequelize.models.lesson.findAll();
-    res.json({ lessons });
-});
 // GET ONE
 // UPDATE ONE 
 // DELETE ONE 
-
-
-
 
 
 module.exports = router;
