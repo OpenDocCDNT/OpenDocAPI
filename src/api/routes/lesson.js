@@ -102,9 +102,16 @@ router.post('/getAll',
     [
         headerFiller
     ],
+
     async (req, res) => {
-        const lessons = await sequelize.models.lesson.findAll();
-        res.json({ lessons });
+        try {
+            const lessons = await sequelize.models.lesson.findAll();
+            res.json({ lessons });
+        } catch (error) {
+            console.log('Error => '+error);
+            
+        }
+        
     });
 
 router.post('/:lessonId',
