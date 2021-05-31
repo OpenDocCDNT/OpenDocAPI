@@ -9,15 +9,15 @@ module.exports = (sequelize) => {
         },
         label: {
             type: DataTypes.STRING(100),
-            allowNull: true
+            allowNull: false
         },
         description: {
             type: DataTypes.TEXT,
-            allowNull: true
+            allowNull: false
         },
         publishDate: {
             type: DataTypes.DATE,
-            allowNull: true
+            allowNull: false
         },
         lastEditedDate: {
             type: DataTypes.DATE,
@@ -25,6 +25,10 @@ module.exports = (sequelize) => {
         },
         reputation: {
             type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        imgBlob: {
+            type: DataTypes.BLOB,
             allowNull: false
         }
     }, {

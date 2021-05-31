@@ -20,7 +20,11 @@ router.post('/create',
             body('label', 'Label is required')
             .notEmpty(),
             body('description', 'Description is required')
-            .notEmpty()
+            .notEmpty(),
+            body('difficulty', 'Difficulty is required')
+              .notEmpty(),
+            body('img', 'Image is required')
+              .notEmpty()
         ]
     ],
     async (req, res) => {
@@ -32,6 +36,13 @@ router.post('/create',
             });
 
         const lessonToCreate = req.body
+
+        if (lessonToCreate.img.size < 1) {
+            return res.status(418).json({
+                errors: "Image not valid"
+            })
+        }
+
         const user = req.user
 
         const lessonExist = await sequelize.models.lesson.findOne({
@@ -54,9 +65,11 @@ router.post('/create',
             const newLesson = await sequelize.models.lesson.create({
                 label: lessonToCreate.label,
                 description: lessonToCreate.description,
+                difficulty: lessonToCreate.difficulty,
                 publishDate: Date.now(),
                 reputation: 0,
-                userId: user.id
+                userId: user.id,
+                imgBlob: lessonToCreate.img
             }, {
                 transaction
             });
