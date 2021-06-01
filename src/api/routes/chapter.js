@@ -15,6 +15,7 @@ const {
 const config = require('config');
 const sequelize = require('../../infrastructure/database');
 const headerFiller = require('../../middlewares/headerFiller');
+const tokenValidator = require('../../middlewares/tokenValidator');
 
 router.post('/chapter',
     [
@@ -125,6 +126,129 @@ router.post('/chapter',
             });
         }
     });
+
+router.post('/createChapter',
+  [
+      headerFiller,
+      tokenValidator,
+      [
+          body('token', 'Token is required')
+            .notEmpty(),
+          body('lessonId','Lesson ID is required')
+            .notEmpty()
+            .isInt(),
+          body('label', 'Label is required')
+            .notEmpty(),
+          body('order', 'Order is required')
+            .notEmpty()
+            .isInt(),
+      ]
+  ],
+  async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+          return res.status(400).json({
+              errors: errors.errors[0].msg
+          });
+
+      const {lessonId, label, order} = req.body
+
+      if (!lessonId || !label || !order) return res.status(400).json({error: "value missing"});
+
+      const lesson = await sequelize.models.lesson.findOne({
+          raw: true,
+          where: {
+              id: lessonId
+          }
+      })
+
+      if (!lesson) return res.status(404).json({error: "lesson not found"});
+
+      const checkifOrderIsTaken = await sequelize.models.chapter.findAll({
+          raw: true,
+          where: {
+              lessonId: lessonId,
+              order: order
+          }
+      })
+
+      const checkifOrderIsNotOutOfBound = await sequelize.models.chapter.findAll({
+          raw: true,
+          where: {
+              lessonId: lessonId
+          }
+      })
+
+      if (checkifOrderIsTaken.length > 0) return res.status(400).json({error: 'order already taken'})
+      if (order > (checkifOrderIsNotOutOfBound.length + 1)) return res.status(400).json({error: 'order out of bound'})
+
+      const transaction = await sequelize.transaction();
+
+      try {
+          const chapter = await sequelize.models.chapter.create({
+              label: label,
+              order: order,
+              lessonId: lessonId
+          }, {
+              transaction
+          });
+
+          transaction.commit();
+
+          return res.status(200).json({responses: "success"})
+      } catch (e) {
+          transaction.rollback()
+          return res.status(500).json({
+              errors: [{
+                  msg: 'Internal error'
+              }]
+          })
+      }
+  })
+
+router.post('/getChapterFromLesson',
+  [
+    headerFiller,
+    tokenValidator,
+      [
+        body('token', 'Token is required')
+          .notEmpty(),
+        body('lessonId','Lesson ID is required')
+          .notEmpty()
+          .isInt()
+      ]
+  ],
+  async (req, res) => {
+      const errors = validationResult(req);
+      if (!errors.isEmpty())
+          return res.status(400).json({
+              errors: errors.errors[0].msg
+          });
+
+      const {lessonId} = req.body
+
+      if (!lessonId) return res.status(404).json({error: "not found"});
+
+      const lesson = await sequelize.models.lesson.findOne({
+          raw: true,
+          where: {
+              id: lessonId
+          }
+      })
+
+      if (!lesson) return res.status(404).json({error: "not found"});
+
+      const chapters = await sequelize.models.chapter.findAll({
+          raw: true,
+          where: {
+              lessonId: lessonId
+          }
+      })
+      console.log(chapters)
+
+      if (chapters)
+      return res.status(200).json({chapters})
+  })
 
 router.post('/chapter/:chapterId',
     [

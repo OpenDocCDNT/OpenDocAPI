@@ -7,6 +7,7 @@ const categoryRoute = require('./src/api/routes/category');
 const sequelize = require('./src/infrastructure/database');
 const lessonRoute = require('./src/api/routes/lesson');
 const authentificationRoute = require('./src/api/routes/authentification');
+const chapterRoute = require('./src/api/routes/chapter');
 
 
 
@@ -27,6 +28,8 @@ app.use('/api/lesson', lessonRoute);
 app.use('/api/role', roleRoute);
 
 app.use('/api/category', categoryRoute);
+
+app.use('/api/chapter', chapterRoute);
 
 const PORT = config.get('api.port');
 app.listen(PORT, () => {

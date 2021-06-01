@@ -9,11 +9,15 @@ module.exports = (sequelize) => {
         },
         label: {
             type: DataTypes.STRING(150),
-            allowNull: true
+            allowNull:  false
         },
         content: {
             type: DataTypes.TEXT,
             allowNull: true
+        },
+        order: {
+            type: DataTypes.INTEGER,
+            allowNull: false
         }
     }, {
         timestamps: false,
