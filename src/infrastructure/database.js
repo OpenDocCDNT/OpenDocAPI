@@ -20,7 +20,8 @@ const modelsToDefine = [
     require('./entities/Comments'),
     require('./entities/Lesson'),
     require('./entities/User_Read_Chapter'),
-    require('./entities/User')
+    require('./entities/User'),
+    require('./entities/ConnectHistory')
 ];
 
 for (const modelToDefine of modelsToDefine) {

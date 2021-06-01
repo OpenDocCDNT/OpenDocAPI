@@ -1,5 +1,5 @@
 module.exports = (sequelize) => {
-    const {user, user_read_chapter, chapter, lesson, comments, role} = sequelize.models;
+    const {user, user_read_chapter, chapter, lesson, comments, role, connectHistory} = sequelize.models;
 
     user_read_chapter.belongsTo(user);
     
@@ -13,4 +13,6 @@ module.exports = (sequelize) => {
     chapter.belongsTo(lesson);
 
     role.belongsTo(user);
+
+    connectHistory.belongsTo(user);
 }

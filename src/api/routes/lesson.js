@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const {
     body,
-    validationResult
+    validationResult,
+    header
 } = require('express-validator');
 const tokenValidator = require('../../middlewares/tokenValidator')
 const config = require('config');
@@ -89,8 +90,10 @@ router.post('/getAll',
     async (req, res) => {
         
         const lessons = await sequelize.models.lesson.findAll();
-        res.json({ lessons });
+        
+        return res.json({ lessons });
     });
+
 
 router.post('/:lessonId',
     [
@@ -201,9 +204,24 @@ router.post('/:lessonId',
         }
     });
 
+
 // GET ONE
 // UPDATE ONE 
 // DELETE ONE 
+router.post('/delete/:idLesson', 
+    [
+        headerFiller
+    ],
+    async (req, res) => {
+        const idUser = req.params.id;
+        const lessons = await sequelize.models.lesson.findOne({
+            raw: true,
+            where: { 
+                lessonId : idUser
+            }
+        })
+        console.log(lessons)
+    })
 
 
 
