@@ -20,7 +20,11 @@ router.post('/create',
             body('label', 'Label is required')
             .notEmpty(),
             body('description', 'Description is required')
-            .notEmpty()
+            .notEmpty(),
+            body('difficulty', 'Difficulty is required')
+              .notEmpty(),
+            body('img', 'Image is required')
+              .notEmpty()
         ]
     ],
     async (req, res) => {
@@ -32,6 +36,13 @@ router.post('/create',
             });
 
         const lessonToCreate = req.body
+
+        if (lessonToCreate.img.size < 1) {
+            return res.status(418).json({
+                errors: "Image not valid"
+            })
+        }
+
         const user = req.user
 
         const lessonExist = await sequelize.models.lesson.findOne({
@@ -51,21 +62,35 @@ router.post('/create',
 
         try {
 
+            let newLessonId;
+
             const newLesson = await sequelize.models.lesson.create({
                 label: lessonToCreate.label,
                 description: lessonToCreate.description,
+                difficulty: lessonToCreate.difficulty,
                 publishDate: Date.now(),
                 reputation: 0,
-                userId: user.id
+                userId: user.id,
+                imgBlob: lessonToCreate.img
             }, {
                 transaction
-            });
+            })
+              .then(newLessonObject => {
+                  newLessonId = newLessonObject.id
+              })
 
             transaction.commit();
+            if (newLessonId) {
+                res.status(200).json({
+                    response: 'Success! Lesson created !',
+                    lessonId: newLessonId
+                });
+            } else {
+                res.status(200).json({
+                    response: 'Success! Lesson created !'
+                });
+            }
 
-            res.status(200).json({
-                response: 'Success! Lesson created !'
-            });
 
         } catch (error) {
             console.log(error);
@@ -114,112 +139,39 @@ router.post('/getAll',
         
     });
 
-router.post('/:lessonId',
+router.post('/getOne',
     [
         headerFiller,
         [
-            body('displayName', 'Display name is required')
-            .notEmpty()
-            .isLength({
-                max: 100
-            }),
-            body('email', 'Valid email is required')
-            .notEmpty()
-            .isLength({
-                max: 100
-            }),
-            body('password', 'Enter a password between 5 and 50 characters')
-            .isLength({
-                min: 5,
-                max: 50
-            })
+            body('token', 'Token is required')
+              .notEmpty(),
+            body('lessonId', 'Id is required')
+              .notEmpty()
+              .isInt()
         ]
     ],
     async (req, res) => {
         const errors = validationResult(req);
+
         if (!errors.isEmpty())
             return res.status(400).json({
                 errors: errors.errors[0].msg
             });
 
-        const userForRegister = req.body;
+        const { lessonId } = req.body;
 
-        const userByEmail = await sequelize.models.user.findOne({
+        if (!lessonId) return
+        const lessonObject = await sequelize.models.lesson.findOne({
             raw: true,
             where: {
-                email: userForRegister.email
+                id: lessonId
             }
         })
-        console.log(userByEmail)
-
-        if (userByEmail) {
-            return res.status(418).json({
-                errors: "User already exists"
-            })
+        console.log(lessonObject)
+        if (lessonObject === null) {
+            return res.status(404).json({error: "not found"});
         }
-
-        const userByName = await sequelize.models.user.findOne({
-            raw: true,
-            where: {
-                displayName: userForRegister.displayName
-            }
-        })
-        console.log(userByName)
-        if (userByName) {
-            console.log("yeet")
-            return res.status(418).json({
-                errors: "User already exists"
-            })
-        }
-        console.log(userForRegister.serverCode);
-
-        if (userForRegister.serverCode !== "0") {
-            const userByServerCode = await sequelize.models.user.findOne({
-                raw: true,
-                where: {
-                    serverCode: userForRegister.serverCode
-                }
-            })
-
-            if (userByServerCode) {
-                console.log("yeet")
-                return res.status(418).json({
-                    errors: "User already exists"
-                })
-            }
-        }
-
-        const transaction = await sequelize.transaction();
-
-        try {
-            const salt = await genSalt(10);
-
-            userForRegister.password = await hash(userForRegister.password, salt);
-
-            const user = await sequelize.models.user.create({
-                displayName: userForRegister.displayName,
-                email: userForRegister.email,
-                password: userForRegister.password,
-                serverCode: userForRegister.serverCode,
-                registerDate: Date.now()
-            }, {
-                transaction
-            });
-
-            transaction.commit();
-
-            res.status(200).json({
-                response: 'Success! You are now registered'
-            });
-        } catch (error) {
-            console.log(error)
-            transaction.rollback();
-            res.status(500).json({
-                errors: [{
-                    msg: 'Internal error'
-                }]
-            })
-        }
+        return res.status(200).json({lesson: lessonObject});
     });
 // GET ONE
 // UPDATE ONE 
