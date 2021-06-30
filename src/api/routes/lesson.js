@@ -94,7 +94,6 @@ router.post('/getAll',
         return res.json({ lessons });
     });
 
-
 router.post('/:lessonId',
     [
         headerFiller,
@@ -204,11 +203,22 @@ router.post('/:lessonId',
         }
     });
 
+router.post('/update/:idLesson', 
+    [
+        headerFiller
+    ],
+    async (req, res) => {
+        const idUser = req.params.id;
+        const lessons = await sequelize.models.lesson.findOne({
+            raw: true,
+            where: { 
+                lessonId : idUser
+            }
+        })
+        console.log(lessons)
+    })
 
-// GET ONE
-// UPDATE ONE 
-// DELETE ONE 
-router.post('/delete/:idLesson', 
+ router.post('/delete/:idLesson', 
     [
         headerFiller
     ],
@@ -224,7 +234,6 @@ router.post('/delete/:idLesson',
     })
 
 
+    module.exports = router;
 
 
-
-module.exports = router;
