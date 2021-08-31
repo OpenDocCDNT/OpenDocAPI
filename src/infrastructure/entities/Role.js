@@ -1,4 +1,4 @@
-const { DataTypes } = require('sequelize')
+/**const { DataTypes } = require('sequelize')
 
 module.exports = (sequelize) => {
     sequelize.define('role', {
@@ -15,4 +15,4 @@ module.exports = (sequelize) => {
         timestamps: false,
         freezeTableName: true
     });
-};
+};**/

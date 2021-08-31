@@ -16,7 +16,7 @@ const sequelize = new Sequelize(
 
 const modelsToDefine = [
     require('./entities/Chapter'),
-    require('./entities/Role'),
+    //require('./entities/Role'),
     require('./entities/Comments'),
     require('./entities/Lesson'),
     require('./entities/User_Read_Chapter'),

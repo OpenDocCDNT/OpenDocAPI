@@ -28,7 +28,6 @@ router.post('/create',
         ]
     ],
     async (req, res) => {
-
         const errors = validationResult(req);
         if (!errors.isEmpty())
             return res.status(400).json({
@@ -42,9 +41,7 @@ router.post('/create',
                 errors: "Image not valid"
             })
         }
-
         const user = req.user
-
         const lessonExist = await sequelize.models.lesson.findOne({
             raw: true,
             where: {
